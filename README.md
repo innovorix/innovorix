@@ -77,7 +77,128 @@ The WhatsApp Gateway used by the Baileys service also reuses the shared SMTP flo
 The gateway signup and reset screens now both require password confirmation so the user can catch typos before submitting.
 
 <details>
+<summary><b>Public website: search indexing and advertising</b></summary>
+
+The sitemap lists public content only. MCQ category URLs come from the published public question bank, so an unseeded category is not advertised to crawlers. Authentication, partner account pages, payments and institute app pages stay outside the sitemap and are blocked in robots.txt. Public pages use a single HTTPS canonical on innovorix.com, including separate canonical URLs for paginated MCQ questions.
+
+The shared page layout loads analytics but does not load AdSense. Future advertising belongs only on blog articles and public MCQ content pages. Pricing, signup and payment flows have no advertising loader or placement in the repository. External Google Tag Manager tags and AdSense account settings need a separate owner review.
+
+</details>
+
+<details>
+<summary><b>New institutes: short signup and the Get Started guide</b></summary>
+
+Signup asks for five things only: school name, your name, mobile, email and password. After the email code, the new admin is signed in straight away and lands on **Get Started**; there is no second login page. The address, school phone, type of institute, time zone and fee currency are filled in on the first step of Get Started. Time zone and currency are guessed from where the person signed up and shown as a one-line summary with a **Change** button.
+
+The sign-in form follows the natural keyboard order: Email, Password, password visibility, then Forgot Password. The recovery link appears below the password field.
+Parallel session checks cannot replace the security cookie used by a sign-in. If
+the token changes, sign-in refreshes it once automatically. Persistent failures
+explain that cookies must be allowed and leave the form ready to try again.
+
+Get Started has five setup steps: create your account, add institute details, add teachers, add classes and sections, and add students. Each step ticks itself from what the school actually has (for example, at least one class), so a step done from its own page shows as done here too. Hovering a tick says why it is ticked. Only the next step is open, with one button; a step that needs an earlier one says so and links to it. Adding teachers can be skipped and put back. Fee creation and attendance are ordinary operational tasks and are not required for setup. Every step has a **Show me how** link that opens its Help Center guide in the side panel.
+
+While the guide is on, the admin dashboard shows the same list in place of the Institute Health score, the menu shows only the setup pages with the rest folded under **More tools** (sorted under the same headings as the full menu), and a page opened from a setup step shows a **Back to setup steps** bar. When every step is done or skipped the list says the school is ready and offers a button to dismiss it. **Hide this list** switches it off early; it can be reopened from the Help Center guide _First-Time Setup Order_.
+
+Only institutes that sign up get the guide (the school preference `onboarding.showSetupGuide` is set to true at signup). Schools that existed before it, and branches added later, never see it unless an admin opens Get Started on purpose.
+
+</details>
+
+<details>
+<summary><b>The menu: groups by kind of work</b></summary>
+
+A long menu folds into groups so a principal is not faced with 26 links: **Attendance** (student and staff attendance, leaves), **Academics** (classes, assessments, exams, marksheets, MCQs, promotion), **Reports** (academic progress, merit list, risk detection), **Fees** (fees, who hasn't paid, payment proofs, instalment requests), **People** (students and guardians, staff) and **Messages** (WhatsApp, communications). Dashboard and Calendar stay at the top. **Help Center** and **Report an Issue** sit at the bottom beside **Settings**.
+
+Page controls keep a fixed footprint on desktop. Hover or keyboard focus reveals their wording without moving neighbouring buttons or wrapping the toolbar. Touch screens keep the wording visible. Attendance uses a compact date control and puts Download report at the right edge; its help is available from the top bar. Cards use compact P/A/L counts when leave is present, and empty classes stay visible without opening a register. Save confirmations distinguish saved attendance from guardian messages that are still waiting.
+
+Desktop headers place the title on the left and their controls on the right of the same row when space permits. Students and Guardians keep the title, flexible search and actions beside each other. The campus studio keeps its own layout, and phone headers retain their existing arrangement. Risk Detection offers 7 days, 30 days, 90 days and 6 months when available, without a Year button.
+
+- **Short menus stay flat.** Folders appear only when someone has 15 or more pages. Teachers, students, guardians, accountants and librarians have fewer, so their menu is a plain list.
+- **The same groups on every plan.** A plan, a switched-off module or a missing permission only removes pages. A group left with one page shows as that page, and an empty group disappears, so upgrading adds pages to groups the principal already knows instead of moving anything.
+- **Open groups are remembered** per person in that browser. Landing on a page inside a closed group opens it, and a closed group holding the current page is highlighted. Only the closest menu entry is highlighted (Who Hasn't Paid, not Fees as well).
+- **Folded sidebar:** a round handle on the sidebar's right edge folds it to icons and back (so do the header button and Ctrl+B). Folded, each group shows as its icon, its tooltip lists what is inside, and clicking it opens the sidebar on that group.
+- **Phone:** the Menu page shows the same groups as headed sections, then a **Help and support** section.
+- **Tablet (768 to 1023 px wide):** the sidebar starts folded to icons so pages get the width their layouts expect. Opened, it floats over the page instead of squeezing it, and it folds away again after picking a page or tapping beside it. Widening the window to laptop size opens it again.
+- **Settings > Roles & permissions** sorts its pages under the same groups.
+- **Settings > WhatsApp messages** is the one place for what goes out on WhatsApp: absences, card attendance, new fees, fee reminders and timetable changes.
+- **Minimum attendance** on Settings > Attendance is one number used by the low attendance badges, Risk Detection and student warnings.
+- **Settings > Advanced settings** holds the finer controls most institutes never change, grouped as Attendance, Messages, Student warnings and WiFi attendance. Each group has **Reset to recommended**, each changed setting shows a **Changed** label with the recommended value, and the usual pages link to the right group. A setting that needs another one stays visible but off, and names the setting it needs. Upload timing for card scans and the WiFi matching numbers are chosen by the app; "How strict the room check is" (Relaxed, Normal, Strict) sets the WiFi numbers.
+
+The groups are defined once in `src/lib/access/page-groups.ts`.
+
+</details>
+
+<details>
+<summary><b>Urdu (اردو): the menu and the Help Center</b></summary>
+
+Anyone signed in can read the app's explanations in Urdu. **اردو میں دیکھیں** in the account menu (and in the top bar on Help pages, where the Help button would be) switches; **View in English** switches back. The choice is saved on that device for a year, and the server renders the chosen language, so nothing flips after a page loads.
+
+**In Urdu:** the menu on every screen size (sidebar, the phone's bottom bar, the Menu page, menu hints, counts and the Trial tag), the header's Help button, account menu and role badge, every Help Center guide (all 44) and the Help side panel on each page.
+
+**Parent and student pages in Urdu:** the dashboard (greeting, pending fees and leaves, each child's attendance and results, tips), the fees page (vouchers, statuses, instalment plans, the payment proof form and its messages) and attendance (each child's card, the calendar with Urdu month and weekday names, monthly and overall totals, the student's WiFi check explanations). Dates read as 10 دسمبر 2026; names, fee titles and class labels the institute typed stay as typed.
+
+**Still English:** staff pages (forms, tables and buttons for admins, teachers and accountants), printed vouchers and report cards, notifications, WhatsApp messages and the public website. That is why the Urdu guides name buttons in English, exactly as the screen shows them, and menu entries in Urdu, exactly as the Urdu menu shows them. For example, the attendance guide says: `طلبہ کی حاضری` کھولیں ... `Take attendance` دبائیں۔ A note at the top of the Help Center explains this to the reader.
+
+**How it reads:** the Urdu Pakistani offices actually use, not a word-for-word translation: رزلٹ کارڈ for marksheets, فیس واؤچر (چالان), ڈیٹ شیٹ, کلاس ٹیچر, پیریڈ, سیٹنگز. Digits stay 0-9 and dates use Urdu month names (3 دسمبر 2026). Urdu is set in Nastaliq (Noto Nastaliq Urdu, self-hosted, downloaded only when Urdu is on screen). The phone's bottom bar uses shorter names where a slot is narrow (ریکارڈ, ہوم ورک).
+
+**Right to left:** in Urdu the whole signed-in app reads right to left: the sidebar sits on the right, rows, tables, forms, dialogs, menus and toasts mirror, and forward and back arrows point the other way. Layout that is data stays left to right: the timetable grid (pixel-identical in both languages), charts, printed vouchers and student cards, and the 3D campus building. English that is not translated yet keeps its own letter order, so punctuation and phone numbers stay readable, and lines up on the right with the rest of the page; emails, phone numbers and passwords are typed left to right. The public website stays English and left to right. English mode was checked pixel for pixel against screenshots taken before the change.
+
+**The English guides were corrected at the same time.** They had drifted from the screens: renamed buttons (Take attendance, Generate new fee, Send notifications, View Voucher, Print or save PDF), renamed menu entries (Student Attendance, All Fees, Who Hasn't Paid, Move to Next Class), renamed Settings sections (Institute details, Login emails and IDs, Reminders and late fees, Student and staff tags) and wrong statements about subjects (they have Manage subjects), sections (a new class takes A, B, C at once), the attendance rule (class teacher first, first-period teacher only as fallback) and part payments.
+
+Words live in `src/lib/i18n` (language, menu, header) and `src/lib/help/ur` (guides). `urdu-help-content.test.ts` fails when an Urdu guide has a different number of steps from English, drops a button or menu name the English quotes, or quotes a name that is neither a real Urdu menu entry nor on the English screen.
+
+</details>
+
+<details>
+<summary><b>Class teachers, smarter student imports and counter receipts</b></summary>
+
+**Class teachers.** Each class card on the Classes page shows who the class teacher of each section is ("Class teachers: 1 of 2 sections", with the names on hover) and a **Pick class teacher** / **Change** button. The class teacher takes that section's attendance. A section without one falls back to the old rule: the teacher of its first period in the timetable. A teacher who is class teacher of nothing sees "You're not a class teacher yet" on Attendance, with what to ask the principal.
+
+**Student import.** The importer takes the school's own Excel (.xlsx) or CSV list. Usual headings such as Student Name, Father Name, Class, Section and Contact No are understood, so the file no longer has to be rebuilt in the sample format. A class written as "5" joins an existing "Class 5" instead of creating a second one. Validation says up front when the plan's student limit will stop some rows, and those rows create no guardian. The same father name with two different phone numbers is treated as two people, and the same name with the same phone as one family, so neither is asked about; the remaining questions can be answered all at once with **Mark all as different people** or **Mark all as the same family**. When the background import finishes, the person who started it gets a notification with how many were added and the main reasons for any that were not.
+
+**Required student gender.** Gender stays selected when a newly admitted student is edited immediately. Spreadsheet imports require a gender for every student. Missing or unrecognized values appear with the row number and student name so an administrator can choose each value during validation, including a file with no gender column. Confirmed choices are preserved in background processing and retries; names never determine gender.
+
+**Name-only guardians.** Standalone guardian creation, admission and Add Guardian in student editing share the same checks. Only the name is required; phone, national identity number and personal email are optional. Adding a new guardian while editing creates and links that person together, preserves any previously linked guardian, and updates both lists immediately. New logins come from saved institute records, including deleted accounts whose addresses remain reserved.
+
+**Fees.** After a payment is recorded, the message names the amount and the student and has a **Print receipt** button (a one-page receipt, printed as text). **Who Hasn't Paid** is in the menu for admins and accountants, and its headline counts unpaid vouchers and the students they belong to. A student's fee history now includes the admission fee set when they were added (it used to read Rs 0). An empty Fees page says what to do next, including "Add your classes first" when there are none.
+
+**Smaller fixes.** New Class accepts several sections at once ("A, B, C") and always shows Save, with a reason when it is off. Saving attendance says what was saved ("Attendance saved for 10 - B: 6 present, 0 absent"). Adding staff shows their login email. The accountant dashboard shows shortcuts instead of "coming soon". Result cards have an empty class teacher's remark box instead of fixed praise. Parents with one child go straight to that child's fees, see fees owed first on their dashboard, and have Attendance and Fees in the phone tab bar.
+
+</details>
+
+<details>
+<summary><b>Administrators: import review, purchase receipts and fee announcements</b></summary>
+
+Staff and class spreadsheets show validation and duplicate problems before processing. Staff review checks contact details, supported roles and institute capacity. Class review checks teacher matches and scheduling conflicts, preserves sections and defaults to merging timetable entries. Imports continue in durable background jobs with row outcomes in import history.
+
+Completed subscription purchases queue a detailed receipt for the purchaser. Returning to the payment page can recover a missing receipt without resending one already delivered. Remaining trial days carry into a paid subscription once. The payment page keeps Back and Go to Dashboard together, and the shorter plan chooser offers a full comparison when needed.
+
+Fee campaign and session cards show a notification bell until their first recorded announcement. Sending requires confirmation and saved fees; an empty campaign explains what to create first. Repeated requests do not queue the same announcement again. Notifications sent before campaign tracking was introduced cannot be reconstructed reliably.
+
+</details>
+
+<details>
+<summary><b>Owner: plan prices, limits and institute agreements</b></summary>
+
+Open **Admin Portal > Plans and agreements** to change the monthly and annual price in PKR and USD, student, class and branch limits, and included pages. Plans do not limit teacher accounts. Choose **Future plan defaults** to update new agreements. Choose an institute to change its saved agreement, set separate purchase prices for any tier, or explicitly apply another plan. Saving prices alone does not activate a different plan. Image storage has separate controls for future registrations and the selected institute. Existing institutes keep their accepted base prices and access when defaults change, and a payment already started retains its saved rules.
+
+New Starter registrations are free for 100 students. New Growth agreements hold 500 students and Pro 1,500; larger institutes talk to us about Enterprise. The catalogue defaults list Growth at Rs 10,999 and Pro at Rs 19,999 a month, with a year costing 10 months. WhatsApp and bug/feature requests remain visible with a lock and are refused by the server. Background WhatsApp sends also check the agreement. Imports and create actions enforce capacity under a database lock, so simultaneous submissions cannot pass the limit. Dashboard, account settings and help remain available; role permissions and institute switches continue to apply.
+
+Changing plans explicitly accepts that plan's current rules. Renewing the same plan uses the institute's saved base prices; temporary offers apply separately to each purchase. Free plans activate without checkout. SafePay and bank-transfer proofs carry the server-selected rules into activation. If the price changes before a payment is started, the buyer must refresh and review the total.
+
+Applied promotion codes travel with the confirmed price into SafePay checkout and bank-transfer payment proofs. A credit promotion sets the final purchase price to its saved amount; percentage promotions apply their saved discount. The server validates the code again before payment, and the payment button waits for the confirmed total.
+
+On a new database, the seed initializes the catalogue and saved agreements. For an existing database, run `npx prisma db push` followed by `node --import tsx scripts/initialize-plan-catalog.ts`. The initializer does not overwrite existing agreements or edited defaults. The campaign starting count of 491 and previously granted lifetime places are preserved.
+
+**Launch offer.** While the switch on **Admin Portal > Free campaign** is on, new institutes get Starter free and Growth costs Rs 6,999 or Pro Rs 12,999 a month; a year costs 10 months at that price. The offer stays on until the owner switches it off, whatever the counter says. Public pages say "A few places left" and never show a count. The pricing page states each saving against paying the usual monthly price for 12 months, and hovering the figure shows the sum. Public prices are always in rupees, because every purchase is charged in rupees; a visitor outside Pakistan also sees an "about $X" estimate at the fixed rate in `src/lib/pricing/estimate.ts` (Rs 280 to $1), and the page says their bank converts the real charge. The USD prices in the plan editor are no longer shown on public pages. Setup and moving records are free on yearly plans; on monthly plans our team collects Rs 3,999 (Growth) or Rs 7,999 (Pro) by hand, since checkout does not add it.
+
+</details>
+
+<details>
 <summary><b>WhatsApp Gateway: safe sending, spreadsheet uploads and developer tools</b></summary>
+
+**Institute usage and allowances.** The WhatsApp page reads actual successful sends from the gateway, using the selected institute’s local day. A linked account starts at zero until a message is actually sent. Queued messages appear separately and reserve the remaining allowance; failures are not counted as sent. Usage refreshes every 20 seconds while visible, and an unavailable gateway shows an error and retry rather than a false zero. New institutes start with 100 messages per day. Only the platform owner can increase a selected institute’s allowance on WhatsApp, or increase and decrease it in Plans and agreements. Changes are audited and synchronized with gateway delivery limits; the gateway’s existing safety ceilings can still delay sending.
+
+For this release, deploy the gateway usage endpoint before Academia, then run `npm run whatsapp:limits:upgrade` through the authorized release process. It upgrades the previous default of 5 in bounded batches, synchronizes gateway allowances and records a one-time release marker. Existing non-default limits are preserved. Later owner reductions to 5 are preserved by that marker.
 
 **Sending is queued, never instant.** When a message is submitted the gateway stores it and answers immediately, then delivers it a few seconds later. Messages leave one at a time per linked number, with a random pause in between and a firm limit on how many go out per minute, per hour and per day. This is deliberate: a burst of identical instant messages is what gets a WhatsApp number banned. An institute can submit a thousand messages at once and they will simply go out safely over time. Nothing is lost if the service restarts, because the waiting messages are stored in the database rather than in memory. If the number disconnects mid-run, the remaining messages wait for it to come back instead of failing.
 
@@ -435,7 +556,7 @@ An implementation team can use this document to understand:
 
 ## Suggested First-Time Institute Setup Journey
 
-An ideal rollout journey inside Innovorix can follow this order:
+New institutes are walked through the essentials of this in the app by **Get Started**. Classes do not need teachers first: teachers can be added later and put into timetable slots. An ideal rollout journey inside Innovorix can follow this order:
 
 ### Step 1: Institute Setup
 
@@ -532,6 +653,20 @@ Innovorix includes strong mobile-readiness and native mobile support.
 The project includes Android build support through a native mobile packaging setup.
 
 This means the product can be delivered not only as a browser platform, but also as a mobile app experience for institutes that prefer app-based usage.
+
+On Android 15 and newer the app fills the whole screen, edge to edge, behind the status bar and the gesture bar. For every role, the dashboard header, the public site and signup headers, the bottom menu, the sidebar on tablets, side panels, dialogs, toasts, the help panel and the landing page's floating buttons keep clear of the clock, the camera notch and the gesture bar. The help panel on phones also stops above the bottom menu. The strip behind the status bar takes the page colour, and the status bar icons follow the theme chosen in the app (dark icons on the light theme, light icons on the dark theme) even when the phone's own dark mode differs. Short pages such as sign-in fit the screen without scrolling. All of this is switched on only inside the Android app; browsers, including on iPhones, are unchanged.
+
+Opening the site while signed in takes you straight to your dashboard. To read the home page anyway, click Home from any other public page, such as Pricing.
+
+Rest the pointer on any menu entry to see what its page is for (on a phone, the Menu page shows it under each name). Numbers beside Payment Proofs, Instalment Requests and Leaves show what is waiting for you. In Settings, type what you are looking for, such as "late fee", into the search box under the heading. The Trial badge in the header shows the days left; tap or hover it to see what happens when the trial ends. Menu entries tagged Trial are not in your plan and lock when the trial ends.
+
+Picking a plan on the Pricing page carries it into sign-up. You set up first on Starter, then Get Started and the dashboard offer to activate the plan you picked.
+
+The 30-day free trial of every feature does not start at sign-up. The dashboard offers it, and it starts only when an administrator presses **Start my 30-day trial** (once per institute). **No thanks** hides the offer; Unlock new features can still start it later. The dashboard warns three days before the trial ends and says so once after it ends; your records are always kept. A free Starter institute sends no WhatsApp messages. Enterprise has no calculated price: its quote screen gives the team's WhatsApp number and email, and a short form.
+
+What each plan includes comes from the saved plan list, the same on the Pricing page, the plan cards and the payment card in the upgrade window. Risk detection, MCQ practice, the campus workspace, monthly fee automation, exam customization, staff engagement and student history are Pro features for new agreements; agreements saved before campus had a plan switch keep it. Scan results, the library, staff WiFi check-in and chat between teachers and guardians start at Growth for new agreements; notices stay on every plan, Starter included. Agreements already saved keep what they allow until the owner edits them. While the full-feature trial runs, each menu entry the plan alone would lock shows a Trial tag. Every plan can report bugs from Report an Issue; asking for new features needs a plan that includes feature requests, and the request tab says so when it is locked.
+
+The app and the public site open in the light theme. Anyone can switch to Dark, or to System (follow the device), from the account menu in the dashboard header or the moon button on the public site, and the choice is remembered on that device.
 
 ### Mobile Strengths That Matter For Adoption
 
@@ -777,7 +912,8 @@ This is where class organization becomes usable across the system.
 ### Main Capabilities
 
 - create classes
-- create sections
+- create sections (several at once, separated by commas)
+- pick the class teacher of each section, who takes its attendance
 - edit full class records
 - edit a single section inside a class
 - assign teachers
@@ -906,6 +1042,15 @@ This is important because institutes need both linked records and independent ma
 - view attendance percentage
 - assign tags
 
+<details>
+<summary>Bulk student card downloads</summary>
+
+In Bulk Student Actions, use the highlighted **Select all classes** option or select specific classes and sections, then choose **Download Student Cards**. Individual student checkboxes narrow the download further.
+
+Choose a ZIP of separate PDF cards, a ZIP of images, or an A4 PDF. ZIP files contain class and section folders. A4 printing supports 1 to 10 full-size cards per sheet, shows a live preview, and starts each class and section on a new page. Print at actual size (100 percent). Downloads show progress and can be cancelled. Missing student identifiers, classes or roll numbers must be completed first; unavailable photos use initials and produce a warning.
+
+</details>
+
 ### Guardian-Side Capabilities
 
 - add guardian
@@ -1009,6 +1154,8 @@ This can be positioned as:
 
 ## Admin Attendance Page
 
+Today’s completion counts only class sections that have enrolled students. Empty sections remain available for navigation and history, with a neutral No students label instead of an overdue attendance warning. A class without sections counts as one attendance group.
+
 ### Purpose
 
 This page is where daily attendance becomes organized, visible, and reportable.
@@ -1068,6 +1215,8 @@ That gives a simple but useful operational signal.
 - invalid future attendance dates are prevented
 - filtered class/section selection keeps the page practical
 - date-range exports are available without needing outside spreadsheets first
+- The first absence defaults to an in-app guardian alert, including a missed test or quiz when one is scheduled. Switching off WhatsApp alerts does not switch off in-app alerts. WhatsApp is selected only when the configured consecutive-absence threshold is reached (two days by default).
+- Attendance stays saved if an alert fails. The register shows the delivery error and remains open for retry; retrying the same day's alert for the same children does not create duplicate in-app records.
 
 ### Why This Matters
 
@@ -1149,6 +1298,8 @@ This page organizes student leave handling in a more disciplined way than messag
 - understand guardian approval status
 
 ### Leave Workflow Depth
+
+Staff see separate Waiting for review, Waiting for guardian and Decided tabs. Guardian-stage requests remain visible with details only and cannot skip guardian approval. Counts and lists share the same search and class filters. The dashboard resolution percentage includes every stage. Demo seed data includes requests ready for staff review as well as requests awaiting guardians.
 
 This is not a flat yes/no leave page.
 
@@ -1295,6 +1446,8 @@ This keeps the page much more organized over time.
 
 ### Datesheet Building
 
+Save stays available while required fields are incomplete. An attempted save highlights missing session, name, class selection and paper details in red, focuses the first missing field and shows a reminder. Correcting a field clears its highlight.
+
 Only the first paper of an exam is typed out in full. Every paper added after it
 is proposed from the one above: the next subject that has no paper yet, the same
 start and end time, the same total marks, and the next date.
@@ -1312,6 +1465,8 @@ Once every subject taught in the selected classes has a paper, no more can be
 added and the button says so.
 
 ### Grade Entry Workflow
+
+Obtained marks accept zero and decimals such as 10.5, up to the subject total. Negative numbers, signs and exponent notation are refused. Paper totals remain positive whole numbers. The server checks these limits before saving a batch.
 
 Marks are entered inside a structured grade-entry dialog.
 
@@ -1587,6 +1742,17 @@ The reminder workflow can use:
 - in-app notifications
 - or both
 
+<details>
+<summary>Automatic reminders and reminders for the whole overdue list</summary>
+
+The settings gear on Fee defaulters opens **Settings > Fee management > Automatic fee reminders**. Automation starts disabled. Administrators can choose the start date, school-local time (initially 8:00 in the morning), recipients and delivery methods. Send on the due date, one day before, or two days before. The background worker checks schedules every minute; reminders require the worker and Redis to be running.
+
+**Remind everyone** targets the current filtered list. Its confirmation shows the actual number of distinct guardians and students, with sibling vouchers combined into one guardian summary. Payment balances and eligibility are checked again before delivery. If the list changes before confirmation, review the updated counts before sending.
+
+When automation is enabled, the page shows the last successful reminder, pending deliveries and failures with a retry action. Settings are saved in the database. Retries preserve completed delivery channels and avoid repeated in-app notices.
+
+</details>
+
 ### Recovery Insights
 
 A second tab on the same page turns the overdue list into a recovery picture, using the payment ledger that records when each instalment actually arrived. For every student who still owes something it shows how many challans were paid on time, paid late or missed, the average number of days late, what is outstanding and how long it has been overdue, plus a behaviour band: **Always Pays On Time**, **Occasionally Late**, **Frequent Late Payer** or **High-Risk Defaulter**. A month-by-month strip shows the last twelve months at a glance, and students with repeated defaults or delays that are growing are flagged.
@@ -1846,6 +2012,10 @@ This page is the configuration backbone of Innovorix.
 - tag management
 - notifications
 - appearance
+
+### Recovery Email
+
+A verified administrator with no separate recovery address automatically uses the verified sign-in email, including its original verification date. A different personal address is preserved. Other roles still require their own separately verified personal email. Verified accounts show a compact status, while verification actions sit beside the relevant text or code field. Loading failures offer Retry.
 
 ### Institute Information Setup
 
@@ -2914,9 +3084,11 @@ Reminders pause when no accessible category can supply ten active questions. Pub
 
 MCQ reminder, welcome and alert emails use **Innovorix <mcqs@innovorix.com>**. Set `MCQ_FROM_EMAIL` to override that address and `MCQ_FROM_NAME` to override the display name. Add this address to Cloudflare Email Routing and verify it as a sending alias for the configured SMTP account before sending emails from it. Other email senders retain their existing settings.
 
-The repository carries the real question source files in `prisma/data/mcqs/`. Each CSV uses `Question,Option A,Option B,Option C,Option D,Correct Answer`, with the correct answer as A, B, C or D. Keep questions containing commas inside quotes. The expected filenames are `general_knowledge_mcqs.csv`, `pakistan-current-affairs-mcqs.csv`, `world-current-affairs-mcqs.csv`, `pak-study-mcqs.csv`, `islamic-studies-mcqs.csv`, `everyday-science-mcqs.csv`, `computer-mcqs.csv`, `english-mcqs.csv` and `past-papers.csv`. Send these files together as a ZIP from the old machine. The files currently contain only headers; real content must be restored before seeding can succeed.
+The repository carries the real question source files in `prisma/data/mcqs/`. Each CSV uses `Question,Option A,Option B,Option C,Option D,Correct Answer`, with the correct answer as A, B, C or D. Keep questions containing commas inside quotes. The expected filenames are `general_knowledge_mcqs.csv`, `pakistan-current-affairs-mcqs.csv`, `world-current-affairs-mcqs.csv`, `pak-study-mcqs.csv`, `islamic-studies-mcqs.csv`, `everyday-science-mcqs.csv`, `computer-mcqs.csv`, `english-mcqs.csv` and `past-papers.csv`. Send these files together as a ZIP from the old machine. The restored bank contains 21,041 validated unique questions. Another 94 source rows with invalid or missing answers are preserved in `prisma/data/mcqs/rejected-rows.csv` for review and are excluded from seeding. Do not guess their answers; correct them from the original source before adding them back to the matching category CSV.
 
-Run `npm run db:seed:mcqs` to add missing shared questions without changing users, subscriptions or quiz history. The full seed uses the same importer and validates the bank before changing demo data. Empty or invalid source files produce a clear failure rather than a misleading success. Question hashes and database duplicate checks make repeated imports safe. Existing questions are preserved; inactive or institute-private duplicates may need review before they can serve as shared questions. Commit the source CSV files with the project so they travel to the next machine.
+Run `npm run db:seed:mcqs` to add missing shared questions without changing users, subscriptions or quiz history. The full seed uses the same importer and validates the bank before changing demo data. Empty or invalid source files produce a clear failure rather than a misleading success. Question hashes and database duplicate checks make repeated imports safe. Existing questions are preserved; inactive or institute-private duplicates may need review before they can serve as shared questions. Commit the source files with the project so they travel to the next machine.
+
+Open Trivia Database questions are downloaded with `npm run mcqs:fetch:opentdb`. The background worker saves each batch into category JSON files under `prisma/data/mcqs/opentdb/`, so a stopped job resumes from saved progress. It waits 10 seconds between API requests, retries temporary connection failures, and writes a master export, manifest and log when complete. Fetching does not change the database. When the download is complete, run `npm run mcqs:seed:opentdb` to import the saved questions, or add `--refresh` to `python3 scripts/fetch-opentdb.py` to check the API bank again later. The API allows up to 50 questions per request, limits each IP to one request every five seconds, and licenses its question data under CC BY-SA 4.0. The category pages carry the source and license credit; keep the downloaded source files and manifest together when backing up the project.
 
 ---
 
@@ -3857,7 +4029,7 @@ Innovorix helps an institute manage people, academics, finance, communication, a
 <details>
 <summary>Public landing and registration</summary>
 
-The landing page uses the live campaign status for the free Starter offer. The availability strip starts at the owner-requested campaign counter of 491 and adds each real institute account, excluding branches and the demo institute. Two institutes display 493 of 500 filled and seven left. The information text explains the starting count. Each new institute account increments the total. It refreshes every 30 seconds and uses the same count as signup eligibility. A failed refresh retains the last confirmed count and offers a retry. The hero also counts the register cells visitors tick with their cursor, separately from registrations. Visitors can open the demo in one click, dismiss the scrolling offer for their browser session, and receive at most one desktop exit demo invitation per browser. Registration explains email verification, review and the currency and time zone already filled in. Regular monthly prices are Rs 2,999 for Starter, Rs 4,999 for Growth and Rs 5,999 for Pro. Pricing shows Starter for 200 students and 20 teacher accounts, Growth for 500 and 50, and Pro without those limits. While free places remain, Growth costs Rs 1,000 per month instead of Rs 4,999 and Pro costs Rs 1,200 per month instead of Rs 5,999 for a purchase made during the offer. Checkout uses the same prices. Enterprise is quoted separately below, and the live demo remains available outside the plan cards.
+Public pages show the current offer terms without a seeded registration total or counter implementation explanation. The internal campaign calculation and eligibility remain unchanged. Plan cards show current allowed pages, with Growth and Pro listing additions to the preceding tier only when all its pages are included. Student, teacher, class and location capacities come from the catalogue. Existing institutes retain their saved agreement. Starter is presented as free without a lifetime marketing promise. The pricing page has a student-count finder, monthly and yearly prices, a horizontal Enterprise option and the full access comparison. Pakistan visitors see rupees and other visitors see dollars. A supplied country header takes priority; when absent, the browser time zone resolves the initial currency before prices appear. Visitors can change the currency, and the selected currency and billing length follow them into signup or institute settings. A branding playground previews the institute name and colour on sample cards and challans; its aligned custom colour picker shares the preset row, and the real QR code opens https://innovorix.com without a visible website caption. Both samples use M Haroon Hamid. Pro highlights white labelling, 24/7 support and document branding, while Enterprise remains an explicitly named horizontal plan. The public page does not advertise data exports or unverified retention and backup promises. A location capacity of zero means unlimited throughout plan saving, branch creation and pricing displays. New Enterprise definitions use unlimited locations; saved agreements retain their explicit values. The About heading renders its complete wording immediately, with one heading element before and after hydration. The comparison page uses a feature matrix with linked vendor sources, a highlighted Innovorix column, current plan availability and horizontal scrolling within the table on phones. Demo and pricing actions stay beside each other at matching heights.
 
 </details>
 
@@ -3867,3 +4039,296 @@ The landing page uses the live campaign status for the free Starter offer. The a
 Login, signup, the live demo and the contact form erase their own button labels while waiting; verification and password recovery also show loading feedback. Signup and login buttons rotate reassuring messages without claiming a completion percentage. Failed or stalled requests restore a retry, and navigation feedback clears on arrival, browser return or timeout.
 
 </details>
+
+<details>
+<summary>Public institute guides and software comparisons</summary>
+
+The public comparison at `/compare` links to official eSchool, EduOffice, Skoo and Academia UMS sources reviewed on 29 October 2026. It distinguishes vendor descriptions from demonstrated capabilities and reads Innovorix prices, allowed pages and capacities directly from the current catalogue. Existing institute agreements are preserved.
+
+The blog includes eight original Pakistan guides for school, college and university buyers, fee recovery, admissions, attendance, parent communication and BISE/FBISE preparation. Each body contains more than 1,500 words. Titles, summaries and body word counts produce the displayed reading estimate at 200 words per minute. The shared article route provides a unique canonical, article metadata, BlogPosting and breadcrumb data, related guides and links to current pricing and public MCQ practice. The sitemap includes only published public routes. Unknown article slugs return 404.
+
+Public navigation links to Blog and Compare, with a mobile menu below the width needed for the desktop links. The blog index no longer claims an unverified number of institute customers. Signup welcome messages read the accepted agreement and do not give a non-expiring plan a trial deadline.
+
+Query research, sources, publication URLs, the ChatGPT follow-up prompt and owner indexing steps are in `docs/pakistan-seo-content.md`. Ranking, indexing and AdSense approval remain Google decisions. No ads or ad invitations were added to pricing, signup, checkout or comparison pages.
+
+</details>
+
+<details>
+<summary>Help button in the header</summary>
+
+Admins and super admins see a **Help** button in the header of every signed-in page: an icon with an accessible label on a phone, icon and text on a larger screen. It opens the Help Center side panel with the guides for the page they are on, so Fees opens the fee guides and Exams the exam guides. A page with no guides of its own opens the general getting-started set (the first-time setup order and what the system does). The Help Center pages do not show the button, because they are the guides.
+
+The pages that already had a "Need help?" button keep it. Those buttons can be specific to a tab, while the header button covers the whole page. Other roles do not see help, as before. The page-to-guides list is `src/lib/help/route-help.ts`.
+
+</details>
+
+<details>
+<summary>Import while creating students and staff</summary>
+
+Both Basic and Advanced creation forms keep an Import button at the left of their footer. It opens the existing file validation and import workflow without discarding the form underneath. Export stays in the main page menu. Institute permissions still apply; when bulk operations are disabled, the form action explains why it is unavailable.
+
+</details>
+
+<details>
+<summary>Confirm class destinations before importing students</summary>
+
+The student import preview shows each file class and section, its student count, and the saved destination. Change the destination before importing when needed. Similar names match existing classes when the match is clear; ambiguous names and sections require a selection. New classes are disabled by default and require explicit selection and permission. Queued imports and retries keep the chosen destination. Existing duplicate classes are not merged automatically.
+
+</details>
+
+<details>
+<summary>Enter historical fees without automatic notifications</summary>
+
+Fees outside the school's current month and year are saved without automatically notifying students or guardians, including future months. A named monthly session identifies the billing month; other sessions use each saved voucher's due-date month. Draft sessions stay quiet. The creation form and session page explain this default, and a confirmed **Send notifications** action lets an administrator announce the saved session explicitly. Existing school delivery preferences and notification delays still apply.
+
+</details>
+
+Dependency security remediation and the complete alert inventory: [Dependabot remediation](docs/dependabot-remediation.md).
+
+<details>
+<summary>Terms, privacy and cancellation pages</summary>
+
+The three legal pages share a responsive reading layout, section navigation, links between documents and contact access. Their displayed dates remain December 1, 2025. Free-plan terms cover changing limits, optional sponsorship, at least thirty days of notice for material commercial changes, payment authorization, protection of recorded institute agreements and renewal pricing. Privacy wording excludes sensitive educational records from behavioural advertising and preserves age-appropriate safeguards. These provisions do not install advertising or create automatic charges.
+
+</details>
+
+<details>
+<summary>Owner layout controls</summary>
+
+The image-storage label, explanation and toggle share one row. The registered-institutes title, searchable filter and Add action also share one row, including narrow screens. The Add action opens the existing institute-creation page.
+
+</details>
+
+SuperAdmin can manage full-feature trials under **Plans and institute agreements**. Choose
+future defaults to set trial days (30 by default, 0 disables new automatic trials), or select
+any institute to save an exact end date, add six calendar months to the draft date, or end its
+trial. Temporary module access expires automatically and returns to the saved agreement. Trial
+changes do not alter paid validity, prices or capacity limits.
+
+<details>
+<summary>College workspace, principal monitoring and student enquiry</summary>
+
+The optional college workspace combines floor-scoped staff access, invitation
+onboarding, teaching-day monitoring, configurable admissions, complete student
+history and institute branding. Teachers can check in, hand over or take over
+lectures when enabled by the administrator; conflicts and corrections are
+recorded. Principal reports separate original assignments and actual conducted
+lectures for payment review. Existing permission roles can be managed from the
+college settings.
+
+Classes also offers an editable campus view with twelve shapes (single row, double
+row, L, U, V, round, T, H, E, closed courtyard, plus and a custom grid), live room
+details, filtered activity and a floor editor with an immediate preview. Arrange
+rooms lets an administrator drag a room to an empty place or onto another room to
+swap them, paint new classrooms, stairs, offices, canteens and open spaces, rename
+rooms and floors, link a class or section and undo each step before one save.
+Customise shape freely turns any template into a grid whose floor outline follows
+the rooms. Room labels show the linked class with its section on a second line,
+the room name or a room number, and are also set in Settings, Floors and classes.
+Full screen keeps filters, menus, dialogs and Campus activity working. The studio
+needs a screen at least 1,024 pixels wide; phones keep the class cards and explain
+why when Building view is pressed. Building view and Class view buttons
+transition between the two views and preserve unsaved building drafts. The
+building title, viewing tools and grouped editing actions share the available
+desktop width. Saved attendance uses the same local date as the Attendance page,
+including across midnight. Records refresh every 30 seconds. **Real-time logs**
+starts off and checks every 3 seconds when enabled; **Refresh records** checks
+immediately. Checks pause in a hidden tab and refresh when you return, without
+interrupting slower requests. Room details and the room list show saved attendance,
+and Campus activity includes attendance saves grouped by class, section and status.
+Only applicable tools are shown. The building
+is loaded on demand and can become the institute's default view.
+Horizontal dragging turns the front of the building with the pointer; left and
+right arrow keys follow the same direction.
+Sidebar SVG icons make a brief movement on hover or keyboard focus, respecting
+reduced-motion preferences without adding an animation package.
+
+See [the Punjab College change record](docs/pu/changes.md) for workflows,
+permission boundaries, Android requirements and portable preview setup. The
+isolated preview starts with `npm run pu:init`, `npm run pu:db`,
+`npm run pu:seed`, and `npm run dev:pu`.
+
+</details>
+
+<details>
+<summary>Student enquiries and institute customisation from the main pages</summary>
+
+Administrators open **Students & Guardians**, view a student, and choose
+**Student history** beside **Profile** and **Fees**. Record behaviour and parent
+meetings, search notes, filter dates and follow-ups, review academic results,
+attendance, admission and correction history. Visibility rules still apply.
+
+Main **Settings** includes floors/classes, college staff access, admission stages,
+teaching/student rules and **Branding, loading and menus**. Choose the institute
+PNG or standard loading animation and review the live preview. Existing roles
+remain editable under **Roles & permissions**.
+
+The Classes building view offers coloured floors, detached room callouts with
+connector lines, multiple-class activity filters and room positions that extend
+the floor on save. Sidebar icons animate their own parts on hover or keyboard
+focus, with reduced motion respected.
+
+See [the interface review](docs/pu/ui-review.md) for changes and validation.
+
+</details>
+
+<details>
+<summary>Shared date navigation and fee action history</summary>
+
+All date calendars use the shared Calendar navigation. Attendance uses the same
+DatePicker field as staff attendance, fee reminders and other forms, keeping
+class-day restrictions and future-date limits. Browsing months or years does
+not change the selected day; selecting a day closes the picker.
+
+Open a voucher's **Payment history and audit** to see who marked it paid,
+recorded a payment, changed its status or reviewed a payment proof. Each event
+keeps the acting account identifier, name and role at the time of the action.
+Delegated staff actions show that staff member. Earlier events without a saved
+recorder are not attributed to an administrator retrospectively.
+
+The building's Campus activity panel has **Include fee activity**, off by default.
+It is available to management with fee-view access and combines with class and
+floor filters. Successful fee audit events go to the configured observability
+provider under `operation: fees.audit`, including in production.
+
+This adds the indexed `fee_audits` table. On an existing isolated pu preview, run
+`npm run pu:db` before starting `npm run dev:pu`. For another local database,
+apply `npm run db:push` and `npm run db:generate` against that local environment.
+
+</details>
+
+<details>
+<summary>Student portal policy, activity history and request security</summary>
+
+Schools now default to student records without login credentials. Guardians continue
+working independently. Edit a class to allow its student accounts, then use Students
+and guardians, Bulk actions, Create student accounts for existing records. Existing
+accounts are skipped without resetting their password.
+
+Admins can open Activity history for recorded actions from the last three calendar
+months. Paid challans also have Payment history and audit. Financial events in the
+building activity panel remain off until selected by someone with fee viewing access.
+
+The platform owner's Access and request security page shows real request counts,
+temporary IP controls and dormant school student logins. Authenticated attendance
+bursts are observed without automatic volume blocks. Cloudflare is the trusted
+client-IP source for the owner's confirmed private-origin deployment.
+
+The existing worker runs college monitoring and notification outbox delivery.
+Older audit records remain stored; the three-month history filter does not delete them.
+Deployment preparation also preserves legacy tables and stops on data-loss warnings.
+Lesson edits take effect tomorrow and preserve recorded
+lecture history. See [the numbered production review](docs/pu/production-review.md)
+for fixes, retained policy decisions, deployment details and validation.
+
+</details>
+
+<details>
+<summary><b>Institute management and setup help</b></summary>
+
+The owner can search and filter registrations, sort newest first, pin institutes across devices and review actual recorded member activity. Automatic jobs and owner management do not count as institute usage. Earlier untracked visits remain unknown.
+
+New institutes receive migration contact links during initial setup, before fourteen days and through twenty student records. Classes opens with cards, with Building view beside Search. Shared actions expand their wording without making the toolbar wrap. The top-bar Help provides the current page's guides.
+
+</details>
+
+<details>
+<summary><strong>Administrators and fee staff: scheduled monthly challans</strong></summary>
+
+Open **Settings > Monthly fees**, or **All Fees > Monthly fees**, to choose the source session and campaigns, the first billing month, preparation time, review lead and payment due day. Selecting a source suggests its next month and the day from its latest saved deadline. Preparation starts off and requires an explicit save. The default review notice is three days before the month starts; administrators can choose five or another lead. Administrators, accountants and staff with active fee permissions receive an in-app review notice after the draft is saved.
+
+Automatic guardian sending starts off. Enable it to suggest the third of the month, or choose day 1 through 28. In-app notices are the default. WhatsApp additionally needs a connected institute account, enabled fee announcements and recipient consent. Automatic sending must be on or before the payment due day. An outage that carries a draft past its deadline leaves it for staff review and manual sending. Manual publication stays available while automatic sending is off. Each guardian gets one summary covering their children's saved challans, with unpaid balances and family links checked again at delivery. The history shows pending, sent, skipped and failed notices and lets authorized staff retry failures.
+
+Payment deadlines clamp to the last day of a short month, then move Saturday or Sunday forward to Monday, including across month boundaries. Information icons explain the rule and actual date. A first manually created session suggests the current institute month through the fifteenth and next month from the sixteenth. Dates remain editable.
+
+Generation uses current active students in the source class and section coverage, current fixed fees, individual discounts and sibling discounts. Payments, old fines and admission charges are not copied. Current unassigned attendance fines follow normal billing rules. Drafts remain hidden from families. Editing an automatic draft preserves its session and scheduled send, and refuses to discard payment or proof history. Source or due-day setting changes apply to later drafts. Existing sessions with the target name are left unchanged for review; historical months are never announced automatically.
+
+PostgreSQL retains each monthly run and each recipient's delivery progress. BullMQ checks every minute and recovers pending work after Redis or server interruptions. Successful channels are recorded independently, and stable in-app notification identifiers make retries safe. Structured server and Redis lifecycle events use the existing Datadog logging provider. The normal application worker starts this schedule; the isolated pu preview uses `npm run workers:pu` alongside `npm run dev:pu`, with its separate database and Redis connection.
+
+English and Urdu guides are available in the Help Center under **Prepare monthly fees and schedule guardian notices**.
+
+</details>
+
+<details>
+<summary><strong>Exam duties, private papers and scheduled results</strong></summary>
+
+Exam duties start switched off for a new exam, so a regular datesheet does not require teacher assignments. Switch on **Assign exam duties** to customize it. Unconfirmed assignments expand automatically and Save explains which confirmation is needed. Validation messages remain readable in production; unexpected failures show a reference that support can find in the server logs.
+
+Administrators and staff delegated exam creation or updating can assign a paper creator and a marker for each selected class, subject and section while making a datesheet. A shared paper across sections is the starting point; a class panel can split it into separate section papers. Each section can retain its own marker. The creator starts as the marker, and both remain editable.
+
+Teacher suggestions use actual timetable assignments. A single teacher covering every selected section receives a green field outline. Ambiguous suggestions use a valid recorded creator from a past exam when available, otherwise a teacher suggestion with a yellow outline and a short reason. Every suggestion must be confirmed. Teacher options rank class-and-subject teaching first, subject teaching elsewhere second, and other eligible teachers last, with explanatory green, yellow and red dots. Historical marks without an author never establish a previous paper creator.
+
+**Exam duties** gives controllers the preparation and marking status, private submission versions, reassignment requests and event history. Teachers use **My exam duties**. Creators can save written drafts or submit text and a private PDF, DOCX, text or image attachment of up to 2 MB. Controllers can return a submission, change either assignee, reopen section marks and record a request decision. Original submissions and actual actors remain in history. Only the assigned marker or a controller may save customized-exam marks. A recorded zero counts as entered, while a blank stays missing. Final section submission checks every eligible student in the active roster, excluding admissions after the exam.
+
+Paper deadlines start off. Enabling them supplies an editable number of days before the paper, deadline time and reminder time. Selecting a result date suggests release at 00:00 on that date, marks due at 23:59 on the previous day, and a reminder at 00:00 two days before release. For 23 October release, these are 22 October at 23:59 and 21 October at 00:00. All values use the institute time zone and remain editable. Students and guardians cannot read scheduled results before release through dashboards, student grade reads or marksheets. Exams without a publication schedule retain their visibility.
+
+A durable notification ledger combines actual subjects and sections for each recipient, rechecks pending work and current assignments, records errors and supports controller retries. A minute sweep queues independent exam reviews and deliveries through Redis and BullMQ with four workers; one large exam does not block the scheduler. Overdue responsibilities and unresolved requests are escalated to controllers. Private paper text and file contents are excluded from job payloads and operation logs.
+
+</details>
+
+<details>
+<summary><strong>Staff engagement: timetable, punctuality and exam history</strong></summary>
+
+**Staff engagement** is a report with **Timetable**, **Punctuality** and **Exam duties** tabs. Administrators and staff delegated staff viewing can select any staff member and a week or month, move between periods and export the lecture evidence. Other staff see **My work report**. The roster also links directly to each person's work report.
+
+The report separates original assignments, completed lectures, partial lectures, confirmed missed lectures, cancellations, attendance-only entries and unrecorded outcomes. An ended lecture with no recorded outcome is unrecorded; it is never silently counted as an absence. Original and current teachers stay distinct, and intermediate handovers remain in the transfer history. The assigned teacher can pass an upcoming lecture to another active, available teacher with a reason; the server rechecks conflicts and permissions. Only staff with updating authority can correct lecture records.
+
+Scheduled hours are current scheduled lecture minutes divided by 60, excluding cancelled and historical attendance-only entries. Verified teaching hours are recorded entry-to-departure minutes for completed or partial lectures, clipped to the scheduled interval and divided by 60. Missing timestamps do not become invented teaching time. These are reviewable records, not automatic payroll or a composite performance score. Past campus records and finalized timetable attendance sessions are included; an attendance session proves attendance was taken, not that a full lesson was taught. Forward timetable snapshots preserve future history, while earlier missing schedules are labelled unknown. The future snapshot horizon is 14 days.
+
+Punctuality compares recorded lecture entry against the scheduled start and the administrator's grace period, initially 5 minutes. The staff WiFi daily attendance register is shown separately with its saved verification verdicts. System engagement counts actual saved actions in the chosen period by module, with the latest recorded sign-in shown as a separate fact. Reading a page is not counted as a saved action. Exam lead time is the elapsed time between final submission and result publication, divided by 24 hours; negative days indicate a late submission.
+
+Staff report settings control the allowed arrival delay, teacher check-in and lecture handovers. Campus-specific restrictions continue to apply. A background sweep preserves lecture snapshots every 10 minutes, and reading a report also refreshes its evidence. The explicit demo institute includes clearly labelled example outcomes, transfers, papers and missing marks, with dates relative to today.
+
+</details>
+
+<details>
+<summary><strong>Plan access, university fees and the first-month trial</strong></summary>
+
+Monthly fee automation, exam customization and duties, staff engagement, and student history have four independent switches in the Super Admin plan catalogue and individual institute agreements. New catalogue defaults include them in Pro and Enterprise; Super Admin can enable or disable them on any plan or institute. Explicit saved choices are retained. Agreements saved before the three new automation and reporting switches existed receive their plan type’s defaults; older student-history access keeps the earlier campus entitlement until explicitly changed. Fee automation also needs fee access, and exam duties need exam access.
+
+The full-feature trial includes all these switches even if the saved Starter agreement would lock them. The platform trial setting defaults to 30 days. The existing flow offers the trial at registration and lets the administrator start it after setup; branches inheriting the agreement share the parent's trial expiry. At expiry the saved agreement applies again, without deleting records. The trial setting remains editable by Super Admin.
+
+Universities, including university branches, are excluded from the monthly fee scheduler, even during a trial. They keep manual term and subject billing with a chosen deadline; their manual first session does not force a monthly name, date or weekend adjustment. Other institute types retain the automated month choice: current month through the 15th, next month from the 16th. Their monthly due day is editable, clamps to a short month's last day, and moves Saturday or Sunday forward to Monday. The information icon explains the actual date. Guardian sending stays off initially and suggests the 3rd when enabled.
+
+Feature changes must update this README in the same task, including actual behavior, permissions, settings, plan and trial defaults, and material verification limits. This requirement is also in `CLAUDE.md` and `.github/copilot-instructions.md`.
+
+</details>
+
+<details>
+<summary><strong>Web and Android lecture notification controls</strong></summary>
+
+Open **Settings > Lecture card** to enable the portal lecture bar for your own account, selected institute and device. It works on the web and inside the app. The Android notification card is a separate explicit choice in that section. Administrators can allow lecture cards, self check-in and handovers in **Settings > Advanced > Staff lecture controls**; campus restrictions also apply. These personal attendance controls are separate from the paid staff report and from daily WiFi attendance.
+
+The first upcoming lecture offers **Check in** and **Pass lecture**. Expanded Android notifications place the action label above the class name, the elapsed timer in the center, checkout on the left and the next class check-in on the right when available. Check-in opens 15 minutes before the scheduled start and closes at its end. The timer uses the server's recorded entry time, so reopening the app does not restart it. The last lecture offers checkout without an unnecessary next-class action.
+
+A normal Android check-in action runs in a background receiver without opening the main app. Passing a lecture opens **My lectures** directly at the available-teacher selector for the correct institute. Entering the next class closes the current session and enters the next in one database transaction. If either step fails, neither is saved. Repeated taps and response retries do not create another transition. Within the first 10 minutes of a session, checkout or a next-class transition requires confirmation showing the recorded duration. Android uses a small confirmation activity for that dialog instead of opening the main portal.
+
+Android notification permission is requested on explicit enabling. Blocked notification channels have an Android settings shortcut. Precise-alarm access is optional and has a separate shortcut; the card falls back to inexact refreshes if it is unavailable or revoked. Android can delay background updates under alarm and battery restrictions. A server failure is shown with a retry path, rather than an optimistic attendance confirmation. The card refreshes on app resume, reboot and application update, and signing out clears it. Cached actions carry the account, institute and record version and are checked against the authenticated server session.
+
+Android layout and permission behavior follow the platform guidance for [Android 12 notification restrictions](https://developer.android.com/about/versions/12/behavior-changes-12) and [exact alarms on Android 14](https://developer.android.com/about/versions/14/changes/schedule-exact-alarms). Android build 3 includes the native changes and must be rebuilt and installed with the real app configuration. The application Java sources and resources compile with Java 21 and Android SDK 36. Verification used a temporary test Firebase configuration, removed after the check; physical-device and real push-delivery testing remain outstanding. A web reload updates the portal controls.
+
+</details>
+
+
+<details>
+<summary><strong>Release versions and support logs</strong></summary>
+
+The version displayed in the application, its health response, browser monitoring, web logs, worker logs and traces uses the same full release, including the build number, such as `0.5.34.2`. Each completed update advances `package.json` through `npm run version:bump` once. Ordinary builds prepare `public/version.json` before compilation and do not advance the release again. A fresh checkout reproduces the same release. Fixed legacy environment version labels no longer override it.
+
+In Datadog US5, use `service:innovorix* env:production status:error` to review application and gateway errors. For one release add `version:0.5.34.2`; for institute exam saves use `service:innovorix env:production @operation:exam.save`, and add `@reference:<displayed reference>` for an individual failure. Select a time range that includes the reported failure. Worker-only searches omit web and browser failures. Counts can contain multiple records of one failure. Browser collection can be blocked by browser or network policy, so exam failures also log on the server.
+
+</details>
+
+
+<details><summary><strong>Institute identification in diagnostics</strong></summary>
+
+Structured server and browser diagnostics include `school.id`, `school.name` and `school.contact` from the saved institute. The contact is the institute’s saved number, not a message recipient’s number. Server metadata is cached briefly and remains separated between concurrent institutes. When identity cannot be resolved, the identifier and an availability flag remain; anonymous requests are not attributed to an invented institute. Credentials and message contents are excluded.
+
+</details>
+
+
+### Landing video and direct demo links
+
+The saved YouTube walkthrough appears before the mobile application section. `/#demo` reaches its player and `/#watch-demo` reaches the whole section. Signed-in dashboard and college redirects preserve an explicit video visit. The signup reminder stays off that fragment. The public page receives only the video identifier, canonical link and title, never private platform settings.
+
+SuperAdmin Portal includes the original landing-video controls for replacing or hiding the link and choosing its check interval. The dedicated `landing-video` worker runs a minute sweep, honors that saved interval and records availability checks in Datadog. Confirmed missing/private responses require two provider confirmations; timeouts, throttling and other inconclusive responses retain the previous availability. Confirmed incidents use the existing saved notification behavior, with durable leases and successful-delivery suppression. Deployment must include the player, owner controls, worker and queue wiring together. A healthy root response alone does not verify the video.
